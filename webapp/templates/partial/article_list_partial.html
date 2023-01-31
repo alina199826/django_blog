@@ -10,6 +10,15 @@
                             {{ tag.name }} {% if  not forloop.last %},{% endif %}
                         {% endfor %}</p>
                         <a href="{{ article.get_absolute_url }}" class="btn btn-primary">Подробнее...</a>
+                    {% if request.user.is_authenticated %}
+                    <button id="like button" onclick="buttonClick(event)"  data-index-link="{% url 'webapp:like' article.pk %}"  class="button dark">
+                      <div class="hand">
+                        <div class="thumb"></div>
+                      </div>
+                      <span>Like<span>d</span></span>
+                    </button>
+                    {% endif %}
+                    <h1 id="counter">{{ article.get_like_count }}</h1>
                     </div>
                 </div>
             </div>
@@ -18,3 +27,6 @@
     {% if is_paginated %}
         {% include 'partial/pagination.html' %}
     {% endif %}
+
+
+{##}

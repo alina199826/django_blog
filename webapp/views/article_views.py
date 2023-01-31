@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.db.models import Q
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.utils.http import urlencode
 from webapp.models import Article
@@ -9,13 +10,28 @@ from django.http import JsonResponse
 from django.views.generic import RedirectView, ListView, DetailView, CreateView, UpdateView, DeleteView, View
 
 
-class TestView(View):
+class LikeView(View):
     def get(self, request, *args, **kwargs):
-        # response = JsonResponse({'test': 2, 'test2': [1,2,3]})
-        response = JsonResponse({'error': 'qweqweqweqwwe'})
-        response.status_code =400
+        article = get_object_or_404(Article, pk=self.kwargs.get('pk'))
+        count = 0
+        if request.user not  in article.like.all():
+            article.like.add(request.user)
+            count += 1
+        else:
+            article.get_like_count()
+
+        like = article.get_like_count()
+
+        list = {
+            'id': article.id,
+            'like': like,
+            'count': count,
+        }
+
+        response = JsonResponse(list)
 
         return response
+
 
 
 class IndexViews(ListView):

@@ -18,6 +18,8 @@ class ArticleForm(forms.ModelForm):
             }
         }
 
+
+
     def clean_title(self):
         title = self.cleaned_data['title']
         if len(title) < 5:

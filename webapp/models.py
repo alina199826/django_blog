@@ -23,6 +23,8 @@ class Article(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Время создания")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Время изменения")
     tags = models.ManyToManyField('webapp.Tag', related_name='articles', blank=True)
+    like = models.ManyToManyField(get_user_model(), blank=True, related_name='likes')
+
 
     class Meta:
         permissions = [
@@ -31,6 +33,9 @@ class Article(models.Model):
 
     def get_absolute_url(self):
         return reverse('webapp:article_view', kwargs={'pk': self.pk})
+
+    def get_like_count(self):
+        return self.like.count()
 
     def get_comments_count(self):
         return self.comments.count()
@@ -47,6 +52,10 @@ class Comment(models.Model):
                                verbose_name="Автор")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Время создания")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Время изменения")
+    like = models.ManyToManyField(get_user_model(), blank=True, related_name='likes_comment')
+
+    def get_like_count(self):
+        return self.like.count()
 
     def __str__(self):
         return f'{self.pk}. {self.text[:20]}'
